@@ -29,6 +29,7 @@ public class BodyPartFragment extends Fragment {
 
         ImageView imageView = (ImageView) rootView.findViewById(R.id.body_part_image_view);
 
+        // display the first image - will update later
         imageView.setImageResource(AndroidImageAssets.getHeads().get(0));
 
         return rootView;
