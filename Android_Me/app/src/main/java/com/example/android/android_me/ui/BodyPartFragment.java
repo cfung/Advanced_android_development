@@ -3,6 +3,7 @@ package com.example.android.android_me.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class BodyPartFragment extends Fragment {
 
     private List<Integer> mImageIds;
     private int mlistIndex;
+    public final static String TAG = "MyActivity";
 
 
     public BodyPartFragment() {
@@ -46,6 +48,8 @@ public class BodyPartFragment extends Fragment {
         //imageView.setImageResource(AndroidImageAssets.getHeads().get());
         if (mImageIds != null){
             imageView.setImageResource(mImageIds.get(mlistIndex));
+        } else {
+            Log.v(TAG, "imageId is null...");
         }
 
 
