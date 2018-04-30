@@ -11,14 +11,27 @@ import android.widget.ImageView;
 import com.example.android.android_me.R;
 import com.example.android.android_me.data.AndroidImageAssets;
 
+import java.util.List;
+
 /**
  * Created by cfung on 4/23/18.
  */
 
 public class BodyPartFragment extends Fragment {
 
+    private List<Integer> mImageIds;
+    private int mlistIndex;
+
 
     public BodyPartFragment() {
+    }
+
+    public void setImageIds(List<Integer> ids){
+        mImageIds = ids;
+    }
+
+    public void setImageIdsIndex(int idx){
+        mlistIndex = idx;
     }
 
     @Nullable
@@ -30,7 +43,11 @@ public class BodyPartFragment extends Fragment {
         ImageView imageView = (ImageView) rootView.findViewById(R.id.body_part_image_view);
 
         // display the first image - will update later
-        imageView.setImageResource(AndroidImageAssets.getHeads().get(0));
+        //imageView.setImageResource(AndroidImageAssets.getHeads().get());
+        if (mImageIds != null){
+            imageView.setImageResource(mImageIds.get(mlistIndex));
+        }
+
 
         return rootView;
 
