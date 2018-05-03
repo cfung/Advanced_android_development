@@ -42,12 +42,25 @@ public class BodyPartFragment extends Fragment {
         //return super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_body_part, container, false);
 
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.body_part_image_view);
+        final ImageView imageView = (ImageView) rootView.findViewById(R.id.body_part_image_view);
 
         // display the first image - will update later
         //imageView.setImageResource(AndroidImageAssets.getHeads().get());
         if (mImageIds != null){
             imageView.setImageResource(mImageIds.get(mlistIndex));
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (mlistIndex < mImageIds.size() - 1){
+                        mlistIndex++;
+                    }
+                    imageView.setImageResource(mImageIds.get(mlistIndex));
+                }
+            });
+
+
         } else {
             Log.v(TAG, "imageId is null...");
         }
