@@ -51,7 +51,7 @@ import com.google.android.exoplayer2.util.Util;
 import java.util.ArrayList;
 
 // completed (1): Have this Activity implement ExoPlayer.EventListener and add the required methods.
-public class QuizActivity extends AppCompatActivity implements ExoPlayer.EventListener {
+public class QuizActivity extends AppCompatActivity implements  View.OnClickListener, ExoPlayer.EventListener {
 
     private static final int CORRECT_ANSWER_DELAY_MILLIS = 1000;
     private static final String REMAINING_SONGS_KEY = "remaining_songs";
@@ -139,7 +139,8 @@ public class QuizActivity extends AppCompatActivity implements ExoPlayer.EventLi
             LoadControl loadControl = new DefaultLoadControl();
 
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
-            mPlayerView.setPlayer(mExoPlayer);
+            // completed (2): Set the ExoPlayer.EventListener to this activity
+            mExoPlayer.addListener(this);
             // prepare the mediaSource
             String userAgent = Util.getUserAgent(this, "ClassicalMusicQuiz");
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(this, userAgent),
@@ -270,6 +271,12 @@ public class QuizActivity extends AppCompatActivity implements ExoPlayer.EventLi
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+        if ((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+            // we are playing
+        } else if(playbackState == ExoPlayer.STATE_READY){
+            // we are paused
+        }
 
     }
 
