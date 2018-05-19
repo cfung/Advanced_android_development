@@ -20,11 +20,16 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -64,6 +69,9 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
     private Button[] mButtons;
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
+    private static final String TAG = QuizActivity.class.getSimpleName();
+    private MediaSessionCompat mMediaSession;
+    private PlaybackStateCompat.Builder mBuilder;
 
 
     @Override
@@ -106,7 +114,11 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
         // Initialize the buttons with the composers names.
         mButtons = initializeButtons(mQuestionSampleIDs);
 
-        // TODO (4): Create a Sample object using the Sample.getSampleByID() method and passing in mAnswerSampleID;
+        // TODO (1): Create a method to initialize the MediaSession. It should create the MediaSessionCompat object, set the flags for external clients, set the available actions you want to support, and start the session.
+        // TODO (2): Create an inner class that extends MediaSessionCompat.Callbacks, and override the onPlay(), onPause(), and onSkipToPrevious() callbacks. Pass an instance of this class into the MediaSession.setCallback() methodin the method you created in TODO 1.
+        initializeMediaSession();
+
+        // completed (4): Create a Sample object using the Sample.getSampleByID() method and passing in mAnswerSampleID;
         Sample answerSample = Sample.getSampleByID(this, mAnswerSampleID);
 
         if (answerSample == null){
@@ -124,6 +136,32 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
         // completed (5): Create a method called initializePlayer() that takes a Uri as an argument and call it here, passing in the Sample URI.
         // initialize the player
         initializePlayer(Uri.parse(answerSample.getUri()));
+
+    }
+
+    public void initializeMediaSession(){
+
+        // 1. create MediaSessionCompact object
+        mMediaSession = new MediaSessionCompat(this,TAG);
+
+        // 2. Set the flags
+        mMediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        // 3. Set an optional Media Button Receiver component
+        mMediaSession.setMediaButtonReceiver(null);
+
+        // 4. set availablble actions and initial state
+        mBuilder = new PlaybackStateCompat().Builder()
+                .setActions(
+                        PlaybackStateCompat.ACTION_PLAY |
+                                PlaybackStateCompat.ACTION_PAUSE |
+                                PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                );
+        mMediaSession.setPlaybackState(mBuilder.build());
+
+        //5. set the call backs
+        mMediaSession.setCallback(new mySessionCallback());
 
     }
 
@@ -150,7 +188,6 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
 
         }
 
-
     }
 
     /**
@@ -174,6 +211,11 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
         return buttons;
     }
 
+    private void releasePlayer(){
+        mExoPlayer.stop();
+        mExoPlayer.release();
+        mExoPlayer = null;
+    }
 
     /**
      * The OnClick method for all of the answer buttons. The method uses the index of the button
@@ -274,10 +316,16 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
 
         if ((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
             // we are playing
+            //PlaybackState = PlaybackStateCompat.ACTION_PLAY;
+            mBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mExoPlayer.getCurrentPosition(), 1f);
+            Log.d(TAG, "onPlayerStateChanged: PLAYING");
         } else if(playbackState == ExoPlayer.STATE_READY){
             // we are paused
+            //PlaybackState = PlaybackStateCompat.ACTION_PAUSE;
+            mBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mExoPlayer.getCurrentPosition(), 1f);
+            Log.d(TAG, "onPlayerStateChanged: PAUSED");
         }
-
+        mMediaSession.setPlaybackState(mBuilder.build());
     }
 
     @Override
@@ -291,4 +339,12 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
     }
 
     // TODO (11): Override onDestroy() to stop and release the player when the Activity is destroyed.
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        // completed (4): When the activity is destroyed, set the MediaSession to inactive.
+        mMediaSession.setActive(false);
+        //playbackState = ExoPlayer.STATE_IDLE;
+        releasePlayer();
+    }
 }
