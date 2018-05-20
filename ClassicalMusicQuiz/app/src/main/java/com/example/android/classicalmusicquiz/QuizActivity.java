@@ -151,7 +151,7 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
         mMediaSession.setMediaButtonReceiver(null);
 
         // 4. set availablble actions and initial state
-        mBuilder = new PlaybackStateCompat().Builder()
+        mBuilder = new PlaybackStateCompat.Builder()
                 .setActions(
                         PlaybackStateCompat.ACTION_PLAY |
                                 PlaybackStateCompat.ACTION_PAUSE |
@@ -346,5 +346,24 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
         mMediaSession.setActive(false);
         //playbackState = ExoPlayer.STATE_IDLE;
         releasePlayer();
+    }
+
+    private class mySessionCallback extends MediaSessionCompat.Callback{
+
+
+        @Override
+        public void onPlay() {
+            mExoPlayer.setPlayWhenReady(true);
+        }
+
+        @Override
+        public void onPause() {
+            mExoPlayer.setPlayWhenReady(false);
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            mExoPlayer.seekTo(0);
+        }
     }
 }
