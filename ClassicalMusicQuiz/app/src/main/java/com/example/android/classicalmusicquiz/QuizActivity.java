@@ -231,7 +231,7 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
         int icon;
         String play_pause;
 
-        if (stateCompat.getPlaybackState() == PlaybackState.ACTION_PLAY_PAUSE){
+        if (stateCompat.getState() == PlaybackStateCompat.STATE_PLAYING){
 
             //mNotificationBuilder.setContentText("ACTION_PLAY_PAUSE");
             icon = R.drawable.exo_controls_pause;
