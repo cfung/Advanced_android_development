@@ -16,6 +16,9 @@
 
 package com.example.android.classicalmusicquiz;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -26,9 +29,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -72,6 +77,7 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
     private static final String TAG = QuizActivity.class.getSimpleName();
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mBuilder;
+    private NotificationManager mNotificationManager;
 
 
     @Override
@@ -211,6 +217,60 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
         return buttons;
     }
 
+    // completed (1): Create a method that shows a MediaStyle notification with two actions (play/pause, skip to previous).
+    // Clicking on the notification should launch this activity. It should take one argument that defines the state of MediaSession.
+    /**
+     * Shows Media Style notification, with an action that depends on the current MediaSession
+     * PlaybackState.
+     * @param stateCompat The PlaybackState of the MediaSession.
+     */
+    private void showNotification(PlaybackStateCompat stateCompat){
+
+        NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this);
+
+        int icon;
+        String play_pause;
+
+        if (stateCompat.getPlaybackState() == PlaybackState.ACTION_PLAY_PAUSE){
+
+            //mNotificationBuilder.setContentText("ACTION_PLAY_PAUSE");
+            icon = R.drawable.exo_controls_pause;
+            play_pause = getString(R.string.pause);
+
+        } else {//if (stateCompat.getPlaybackState() == PlaybackState.ACTION_SKIP_TO_PREVIOUS){
+
+            //mNotificationBuilder.setContentText("ACTION_SKIP_TO_PREVIOUS");
+            icon = R.drawable.exo_controls_play;
+            play_pause = getString(R.string.play);
+
+        }
+
+        NotificationCompat.Action playPauseAction = new NotificationCompat.Action(
+                icon, play_pause,
+                MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                        PlaybackStateCompat.ACTION_PLAY_PAUSE));
+
+        NotificationCompat.Action restartAction = new android.support.v4.app.NotificationCompat.Action(
+                R.drawable.exo_controls_previous, getString(R.string.restart),
+                MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
+
+
+        mNotificationBuilder.setContentTitle("Notification - MediaPlayer");
+        PendingIntent mediaPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, QuizActivity.class), 0);
+        //TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        mNotificationBuilder.setContentIntent(mediaPendingIntent)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .addAction(restartAction)
+                .addAction(playPauseAction)
+                .setStyle(new NotificationCompat.MediaStyle()
+                    .setMediaSession(mMediaSession.getSessionToken())
+                    .setShowActionsInCompactView(0,1));
+
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mNotificationBuilder.build());
+
+    }
+
     private void releasePlayer(){
         mExoPlayer.stop();
         mExoPlayer.release();
@@ -326,6 +386,9 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
             Log.d(TAG, "onPlayerStateChanged: PAUSED");
         }
         mMediaSession.setPlaybackState(mBuilder.build());
+
+        // TODO (2): Call the method to show the notification, passing in the PlayBackStateCompat object.
+        showNotification(PlaybackStateCompat.fromPlaybackState(playbackState));
     }
 
     @Override
