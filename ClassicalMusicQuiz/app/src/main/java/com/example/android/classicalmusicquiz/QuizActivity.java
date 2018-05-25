@@ -262,6 +262,7 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .addAction(restartAction)
                 .addAction(playPauseAction)
+                .setSmallIcon(R.drawable.ic_music_note)
                 .setStyle(new NotificationCompat.MediaStyle()
                     .setMediaSession(mMediaSession.getSessionToken())
                     .setShowActionsInCompactView(0,1));
