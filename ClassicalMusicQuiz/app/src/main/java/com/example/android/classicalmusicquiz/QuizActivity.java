@@ -388,7 +388,7 @@ public class QuizActivity extends AppCompatActivity implements  View.OnClickList
         mMediaSession.setPlaybackState(mBuilder.build());
 
         // TODO (2): Call the method to show the notification, passing in the PlayBackStateCompat object.
-        showNotification(PlaybackStateCompat.fromPlaybackState(playbackState));
+        showNotification(mBuilder.build());
     }
 
     @Override
