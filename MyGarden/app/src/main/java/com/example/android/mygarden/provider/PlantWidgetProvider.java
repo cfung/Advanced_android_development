@@ -13,6 +13,7 @@ import android.widget.RemoteViews;
 
 import com.example.android.mygarden.R;
 import com.example.android.mygarden.ui.MainActivity;
+import com.example.android.mygarden.ui.PlantWateringService;
 
 public class PlantWidgetProvider extends AppWidgetProvider {
 
@@ -28,6 +29,12 @@ public class PlantWidgetProvider extends AppWidgetProvider {
 
         // Widgets allow click handlers to only launch pending intents
         views.setOnClickPendingIntent(R.id.widget_plant_image, pendingIntent);
+
+        // completed (4): Create a PendingIntent for the PlantWateringService and setOnClickPendingIntent for widget_water_button
+        Intent wateringIntent = new Intent(context, PlantWateringService.class);
+        wateringIntent.setAction(PlantWateringService.ACTION_WATER_PLANTS);
+        PendingIntent pendingIntentWaterService = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.widget_water_btn, pendingIntentWaterService);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
