@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
 
 /**
@@ -18,7 +19,11 @@ import com.example.android.mygarden.ui.PlantWateringService;
 public class PlantWidgetProvider extends AppWidgetProvider {
 
     //set updateAppWidget to handle clicks and launch MainActivity
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId){
+    // TODO (1): Modify updateAppWidget method to take an image recourse and call
+    // setImageViewResource to update the widget’s image
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                int appWidgetId,
+                                int imageRes){
 
         // Create an Intent to launch MainActivity when clicked
         Intent intent = new Intent(context, MainActivity.class);
@@ -38,15 +43,25 @@ public class PlantWidgetProvider extends AppWidgetProvider {
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+        views.setImageViewResource(appWidgetId, imageRes);
 
     }
 
+    // TODO (2): Move the updateAppWidget loop to a new method called updatePlantWidgets and pass through the image recourse
+    // There may be multiple widgets active, so update all of them
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
     {
+        //updatePlantWidgets(context, appWidgetManager, appWidgetIds, imageRes);
+        PlantWateringService.startActionWaterPlants(context);
+    }
+
+    private static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, int imageRes){
+
         for (int appWidgetId : appWidgetIds){
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            updateAppWidget(context, appWidgetManager, appWidgetId, imageRes);
         }
+
     }
 
     @Override
