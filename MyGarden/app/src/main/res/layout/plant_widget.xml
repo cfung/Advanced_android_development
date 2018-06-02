@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_water_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/grass"
+        />
 
     <ImageView
         android:id="@+id/widget_plant_image"
@@ -10,4 +17,10 @@
         android:layout_gravity="center"
         android:src="@drawable/grass"/>
 
-</android.support.constraint.ConstraintLayout>
+    <!-- completed (4) Add a new TextView in plant_widget and set it to show the plant ID -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/plant_id"/>
+
+</LinearLayout>
