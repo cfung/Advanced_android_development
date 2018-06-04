@@ -19,11 +19,15 @@ import com.example.android.mygarden.ui.PlantWateringService;
 public class PlantWidgetProvider extends AppWidgetProvider {
 
     //set updateAppWidget to handle clicks and launch MainActivity
-    // TODO (1): Modify updateAppWidget method to take an image recourse and call
+    // completed (1): Modify updateAppWidget method to take an image recourse and call
     // setImageViewResource to update the widget’s image
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId,
                                 int imageRes){
+
+        // TODO (3): Set the click handler to open the DetailActivity for plant ID,
+        // or the MainActivity if plant ID is invalid
+        // Create an Intent to launch MainActivity when clicked
 
         // Create an Intent to launch MainActivity when clicked
         Intent intent = new Intent(context, MainActivity.class);
@@ -47,7 +51,7 @@ public class PlantWidgetProvider extends AppWidgetProvider {
 
     }
 
-    // TODO (2): Move the updateAppWidget loop to a new method called updatePlantWidgets and pass through the image recourse
+    // completed (2): Move the updateAppWidget loop to a new method called updatePlantWidgets and pass through the image recourse
     // There may be multiple widgets active, so update all of them
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
