@@ -23,7 +23,8 @@ public class PlantWidgetProvider extends AppWidgetProvider {
     // setImageViewResource to update the widget’s image
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId,
-                                int imageRes){
+                                int imageRes,
+                                String plantId){
 
         // TODO (3): Set the click handler to open the DetailActivity for plant ID,
         // or the MainActivity if plant ID is invalid
@@ -60,10 +61,11 @@ public class PlantWidgetProvider extends AppWidgetProvider {
         PlantWateringService.startActionWaterPlants(context);
     }
 
-    private static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, int imageRes){
+    private static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, int imageRes,
+                                           String plantId){
 
         for (int appWidgetId : appWidgetIds){
-            updateAppWidget(context, appWidgetManager, appWidgetId, imageRes);
+            updateAppWidget(context, appWidgetManager, appWidgetId, imageRes, plantId);
         }
 
     }
